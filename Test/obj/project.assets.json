@@ -984,11 +984,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\C# Project\\Final\\Test\\Test.csproj",
-      "projectName": "Test",
-      "projectPath": "D:\\C# Project\\Final\\Test\\Test.csproj",
+      "projectUniqueName": "D:\\C# Project\\AiroSystem\\Test\\AIRO_System.csproj",
+      "projectName": "AIRO_System",
+      "projectPath": "D:\\C# Project\\AiroSystem\\Test\\AIRO_System.csproj",
       "packagesPath": "C:\\Users\\Mohamed\\.nuget\\packages\\",
-      "outputPath": "D:\\C# Project\\Final\\Test\\obj\\",
+      "outputPath": "D:\\C# Project\\AiroSystem\\Test\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Mohamed\\AppData\\Roaming\\NuGet\\NuGet.Config",

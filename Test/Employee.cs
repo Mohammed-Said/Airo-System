@@ -12,10 +12,6 @@ namespace c_Airline
   public class Employee : ICrudOperation
   {
 
-
-
-
-
     //Properties
     public int Employee_ID { get; set; }
     public string? Name { get; set; }
@@ -27,91 +23,108 @@ namespace c_Airline
     public bool IsDeleted { get; set; }
 
 
-
-
-
     //Main Functions : 
     //Function To create a new Row IN Employee class
     public bool Create()
     {
       try
       {
-        bool Iscreated = false;
-        do
+
+        //To Ensure the user insert Not Empty
+        while (true)
         {
+          Console.Write("Enter Employee Name: ");
+          Name = Console.ReadLine();
+          if (!string.IsNullOrWhiteSpace(Name))
+            break;
 
-          //To Ensure the user insert Not Empty
-          while (true)
-          {
-            Console.Write("Enter Employee Name: ");
-            Name = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(Name))
-              break;
+          canNotBeEmpty("Employee Name");
+        }
 
-            canNotBeEmpty("Employee Name");
-          }
+        //To Ensure the user insert Not Empty
+        while (true)
+        {
+          Console.Write("Enter Employee Address: ");
+          Address = Console.ReadLine();
+          if (!string.IsNullOrWhiteSpace(Address))
+            break;
 
-          //To Ensure the user insert Not Empty
-          while (true)
-          {
-            Console.Write("Enter Employee Address: ");
-            Address = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(Address))
-              break;
-
-            canNotBeEmpty("Employee Address");
-          }
+          canNotBeEmpty("Employee Address");
+        }
 
 
-          //To Ensure the user insert correct Gender
-          Console.Write("Enter Employee Gender(M/F): ");
+        //To Ensure the user insert correct Gender
+        Console.Write("Enter Employee Gender(M/F): ");
 
-          char _Gender;
-          while (!char.TryParse(Console.ReadLine(), out _Gender) || char.ToUpper(_Gender) != 'M' && char.ToUpper(_Gender) != 'F')
-          {
-            NotValidGender();
-          }
+        char _Gender;
+        while (!char.TryParse(Console.ReadLine(), out _Gender) || char.ToUpper(_Gender) != 'M' && char.ToUpper(_Gender) != 'F')
+        {
+          NotValidGender();
+        }
 
-          //To Ensure the user insert Not Empty
-          while (true)
-          {
-            Console.Write("Enter Employee Position: ");
-            Position = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(Position))
-              break;
+        //To Ensure the user insert Not Empty
+        while (true)
+        {
+          Console.Write("Enter Employee Position: ");
+          Position = Console.ReadLine();
+          if (!string.IsNullOrWhiteSpace(Position))
+            break;
 
-            canNotBeEmpty("Employee Position");
-          }
+          canNotBeEmpty("Employee Position");
+        }
 
-          //To Ensure the user insert correct Birthday
-          Console.Write("Enter Employee Birthday (MM/DD/YYYY): ");
+        //To Ensure the user insert correct Birthday
+        Console.Write("Enter Employee Birthday (MM/DD/YYYY): ");
 
-          DateTime _date;
-          while (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out _date))
-          {
-            NotValidDate();
-          }
+        DateTime _date;
+        while (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out _date))
+        {
+          NotValidDate();
+        }
 
-          //To Ensure That ID _AirlineID is int 
-          Console.Write("Enter AirlineID: ");
-          int _AirlineID;
-          while (true)
-          {
-            if (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
-              NotValidIDPositive();
-            else if (!IsIDExist(_AirlineID))
-              NotValidIDExistance();
-            else
-              break;
+        //To Ensure That ID _AirlineID is int 
+        Console.Write("Enter AirlineID: ");
+        int _AirlineID;
+        while (true)
+        {
+          if (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
+            NotValidIDPositive();
+          else if (!IsIDExist(_AirlineID))
+            NotValidIDExistance();
+          else
+            break;
 
-          }
-
-
-          //To Ensure That ID _AirlineID is in our DB and create That spcific Row
-          IscreatedFunc(_AirlineID, ref Iscreated, ref _Gender, ref _date);
+        }
 
 
-        } while (!Iscreated);
+        IsDeleted = true;
+
+        string query = "INSERT INTO Employees (Name, Address, Gender, Position, Birthday, AirlineID, IsDeleted) " +
+                       "VALUES (@Name, @Address, @Gender, @Position, @Birthday, @AirlineID, @IsDeleted)";
+
+        using (SqlCommand command = new SqlCommand(query, SystemRepostory.connection))
+        {
+          command.Parameters.AddWithValue("@Name", Name);
+          command.Parameters.AddWithValue("@Address", Address);
+          command.Parameters.AddWithValue("@Gender", char.ToUpper(_Gender));
+          command.Parameters.AddWithValue("@Position", Position);
+          command.Parameters.AddWithValue("@Birthday", _date);
+          command.Parameters.AddWithValue("@AirlineID", _AirlineID);
+          command.Parameters.AddWithValue("@IsDeleted", IsDeleted);
+
+          command.ExecuteNonQuery();
+
+        }
+
+
+
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("The Row of Employees is Created Successfully.");
+        Console.ForegroundColor = ConsoleColor.White;
+
+
+
 
       }
       catch (Exception ex)
@@ -122,28 +135,123 @@ namespace c_Airline
       return true;
     }
 
-
     //To Edit Specific Row With It's ID
     public bool Edit()
     {
       try
       {
-        bool isUpdated = false;
-        do
+
+        //To Ensure That ID is Int and ON DB
+        Console.Write("Enter Employee ID of Row You Want to Edit: ");
+
+        int InputID;
+
+        while (true)
         {
-          //To Ensure That ID is Int
-          Console.Write("Enter Employee ID of Row You Want to Edit: ");
-
-          int InputID;
-          while (!int.TryParse(Console.ReadLine(), out InputID) || InputID <= 0)
-          {
+          if (!int.TryParse(Console.ReadLine(), out InputID) || InputID <= 0)
             NotValidIDPositive();
-          }
+          else if (!IsIDEmpsExist(InputID))
+            NotValidIDEmpExistance();
+          else
+            break;
 
-          //To Ensure That ID Employee is in our DB and Then the update process 
-          if (IsUpdated(ref InputID, ref isUpdated)) { }
+        }
 
-        } while (!isUpdated);
+
+        //To Ensure the user insert Not Empty
+        while (true)
+        {
+          Console.Write("Enter Employee Name: ");
+          Name = Console.ReadLine();
+          if (!string.IsNullOrWhiteSpace(Name))
+            break;
+
+          canNotBeEmpty("Employee Name");
+        }
+
+
+        //To Ensure the user insert Not Empty
+        while (true)
+        {
+          Console.Write("Enter Employee Address: ");
+          Address = Console.ReadLine();
+          if (!string.IsNullOrWhiteSpace(Address))
+            break;
+
+          canNotBeEmpty("Employee Address");
+        }
+
+
+        //To Ensure Gender is Correct
+        Console.Write("Enter Employee Gender(M/F): ");
+        char _Gender;
+        while (!char.TryParse(Console.ReadLine(), out _Gender) || char.ToUpper(_Gender) != 'M' && char.ToUpper(_Gender) != 'F')
+        {
+          NotValidGender();
+        }
+
+
+        //To Ensure the user insert Not Empty
+        while (true)
+        {
+          Console.Write("Enter Employee Position: ");
+          Position = Console.ReadLine();
+          if (!string.IsNullOrWhiteSpace(Position))
+            break;
+
+          canNotBeEmpty("Employee Position");
+        }
+
+        //To Ensure The Date is Correct
+        Console.Write("Enter Employee Birthday (MM/DD/YYYY): ");
+
+        DateTime _date;
+        while (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out _date))
+        {
+          NotValidDate();
+        }
+
+        //To Ensure That ID is Int and ON DB
+        Console.Write("Enter AirlineID: ");
+        int _AirlineID;
+        while (true)
+        {
+          if (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
+            NotValidIDPositive();
+          else if (!IsIDExist(_AirlineID))
+            NotValidIDExistance();
+          else
+            break;
+
+        }
+
+        IsDeleted = true;
+
+        string query = $"UPDATE Employees SET Name = @Name, Address = @Address, Gender = @Gender, " +
+                       "Position = @Position, Birthday = @Birthday, AirlineID = @AirlineID, IsDeleted = @IsDeleted " +
+                       $"WHERE Employee_ID = @InputID";
+
+        using (SqlCommand command = new SqlCommand(query, SystemRepostory.connection))
+        {
+          command.Parameters.AddWithValue("@InputID", InputID);
+          command.Parameters.AddWithValue("@Name", Name);
+          command.Parameters.AddWithValue("@Address", Address);
+          command.Parameters.AddWithValue("@Gender", char.ToUpper(_Gender));
+          command.Parameters.AddWithValue("@Position", Position);
+          command.Parameters.AddWithValue("@Birthday", _date);
+          command.Parameters.AddWithValue("@AirlineID", _AirlineID);
+          command.Parameters.AddWithValue("@IsDeleted", IsDeleted);
+
+          command.ExecuteNonQuery();
+
+        }
+
+
+
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("The Row of Employee Is Updated Successfully.");
+        Console.ForegroundColor = ConsoleColor.White;
 
 
       }
@@ -155,30 +263,42 @@ namespace c_Airline
       return true;
     }
 
-
-
     //To Delete Specific Row With It's ID
     public bool Delete()
     {
       try
       {
-        bool deletionSuccessful = false;
 
-        do
+        //To Ensure That ID is Int and That ID is in our DB
+        Console.Write("Enter Employee ID of Row You Want To Delete: ");
+
+        int inputID;
+
+        while (true)
         {
-          //To Ensure That ID is Int
-          Console.Write("Enter Employee ID of Row You Want To Get: ");
-
-          int inputID;
-          while (!int.TryParse(Console.ReadLine(), out inputID) || inputID <= 0)
-          {
+          if (!int.TryParse(Console.ReadLine(), out inputID) || inputID <= 0)
             NotValidIDPositive();
-          }
+          else if (!IsIDEmpsExist(inputID))
+            NotValidIDEmpExistance();
+          else
+            break;
 
-          //To Ensure That ID is in our DB
-          if (IsIDDeleted(inputID, ref deletionSuccessful)) { }
+        }
+        string query = "DELETE FROM Employees WHERE Employee_ID = @InputID";
+        using (SqlCommand command = new SqlCommand(query, SystemRepostory.connection))
+        {
+          command.Parameters.AddWithValue("@InputID", inputID);
 
-        } while (!deletionSuccessful); // Continue until the deletion is successful or the user decides not to try again
+          command.ExecuteNonQuery();
+        }
+
+
+
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("The Row of Employees Deleted Successfully.");
+        Console.ForegroundColor = ConsoleColor.White;
+
 
       }
       catch (Exception ex)
@@ -188,8 +308,6 @@ namespace c_Airline
       }
       return true;
     }
-
-
 
     //To Show  all Rows 
     public void GetAll()
@@ -246,39 +364,70 @@ namespace c_Airline
       }
     }
 
-
-
     //To Get Specific Row With It's ID
     public void GetByID()
     {
       try
       {
-        bool IsGetting = false;
-        do
+
+        Console.Write("Enter Employee ID of Row You Want To GET: ");
+        //To Ensure That ID is Int
+        int InputID;
+
+        while (true)
         {
-
-          Console.Write("Enter Employee ID of Row You Want To GET: ");
-          //To Ensure That ID is Int
-          int InputID;
-          while (!int.TryParse(Console.ReadLine(), out InputID) || InputID <= 0)
-          {
+          if (!int.TryParse(Console.ReadLine(), out InputID) || InputID <= 0)
             NotValidIDPositive();
+          else if (!IsIDEmpsExist(InputID))
+            NotValidIDEmpExistance();
+          else
+            break;
+
+        }
+
+        string query = "SELECT * FROM Employees WHERE Employee_ID = @InputID";
+
+        using (SqlCommand command = new SqlCommand(query, SystemRepostory.connection))
+        {
+          command.Parameters.AddWithValue("@InputID", InputID);
+          using (SqlDataReader reader = command.ExecuteReader())
+          {
+            while (reader.Read())
+            {
+              Employee_ID = (int)reader["Employee_ID"];
+              Name = reader.IsDBNull(reader.GetOrdinal("Name")) ? "" : (string)reader["Name"];
+              Address = reader.IsDBNull(reader.GetOrdinal("Address")) ? "" : (string)reader["Address"];
+              Gender = reader.IsDBNull(reader.GetOrdinal("Gender")) ? "" : (string)reader["Gender"];
+              Position = reader.IsDBNull(reader.GetOrdinal("Position")) ? "" : (string)reader["Position"];
+              Birthday = reader.IsDBNull(reader.GetOrdinal("Birthday")) ? null : (DateTime)reader["Birthday"];
+              AirlineID = reader.IsDBNull(reader.GetOrdinal("AirlineID")) ? null : (int)reader["AirlineID"];
+              IsDeleted = reader.IsDBNull(reader.GetOrdinal("IsDeleted")) ? false : (bool)reader["IsDeleted"];
+            }
           }
+        }
+        TableMaker.PrintLine();
+        TableMaker.PrintRow("Employee_ID", "Name", "Address", "Gender", "Position", "Birthday", "AirlineID", "IsDeleted");
+        TableMaker.PrintLine();
+        TableMaker.PrintRow(Employee_ID.ToString(), Name, Address, Gender, Position, Birthday.ToString(), AirlineID.ToString(), IsDeleted.ToString());
+        TableMaker.PrintLine();
+        //  Console.WriteLine($"Employee_ID: {Employee_ID}, Name: {Name}," +
+        //                    $" Address: {Address},Gender: {Gender},Position: {Position}," +
+        //                    $"Birthday: {Birthday}, AirlineID: {AirlineID}, IsDeleted: {IsDeleted}");
 
-          //To Ensure That ID is in our DB and update That spcific Row
-          if (IsGetted(InputID, ref IsGetting)) { }
 
-        } while (!IsGetting);
+
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("The Row of Employee Is Getted Successfully.");
+        Console.ForegroundColor = ConsoleColor.White;
+
+
       }
       catch (Exception ex)
       {
         Console.WriteLine($"Error retrieving Employees: {ex.Message}");
       }
     }
-
-
-
-
 
     //Helper Functions :
 
@@ -332,8 +481,6 @@ namespace c_Airline
 
 
     }
-
-
 
     //
     //
@@ -395,288 +542,6 @@ namespace c_Airline
 
     }
 
-    //Function That checked if Row is Created 
-    private bool IscreatedFunc(int inputID, ref bool Iscreated, ref char _Gender, ref DateTime _date)
-    {
-
-      if (IsIDExist(inputID))
-      {
-        IsDeleted = true;
-
-        string query = "INSERT INTO Employees (Name, Address, Gender, Position, Birthday, AirlineID, IsDeleted) " +
-                       "VALUES (@Name, @Address, @Gender, @Position, @Birthday, @AirlineID, @IsDeleted)";
-
-        using (SqlCommand command = new SqlCommand(query, SystemRepostory.connection))
-        {
-          command.Parameters.AddWithValue("@Name", Name);
-          command.Parameters.AddWithValue("@Address", Address);
-          command.Parameters.AddWithValue("@Gender", char.ToUpper(_Gender));
-          command.Parameters.AddWithValue("@Position", Position);
-          command.Parameters.AddWithValue("@Birthday", _date);
-          command.Parameters.AddWithValue("@AirlineID", inputID);
-          command.Parameters.AddWithValue("@IsDeleted", IsDeleted);
-
-          command.ExecuteNonQuery();
-
-        }
-
-
-        Iscreated = true;
-
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("The Row of Employees is Created Successfully.");
-        Console.ForegroundColor = ConsoleColor.White;
-
-        return Iscreated;
-      }
-      else
-      {
-        NotValidIDExistance();
-        return false;
-      }
-
-
-    }
-
-
-
-    //Function That checked if airlineId is Updated correctly 
-    private bool IsRowUpdated(ref int airlineId, ref int EmpID, ref bool isIDAieUpdated, ref char _Gender, ref DateTime _date)
-    {
-
-      if (IsIDExist(airlineId))
-      {
-
-        IsDeleted = true;
-
-        string query = $"UPDATE Employees SET Name = @Name, Address = @Address, Gender = @Gender, " +
-                       "Position = @Position, Birthday = @Birthday, AirlineID = @AirlineID, IsDeleted = @IsDeleted " +
-                       $"WHERE Employee_ID = @InputID";
-
-        using (SqlCommand command = new SqlCommand(query, SystemRepostory.connection))
-        {
-          command.Parameters.AddWithValue("@InputID", EmpID);
-          command.Parameters.AddWithValue("@Name", Name);
-          command.Parameters.AddWithValue("@Address", Address);
-          command.Parameters.AddWithValue("@Gender", char.ToUpper(_Gender));
-          command.Parameters.AddWithValue("@Position", Position);
-          command.Parameters.AddWithValue("@Birthday", _date);
-          command.Parameters.AddWithValue("@AirlineID", airlineId);
-          command.Parameters.AddWithValue("@IsDeleted", IsDeleted);
-
-          command.ExecuteNonQuery();
-
-        }
-
-
-        isIDAieUpdated = true;
-
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("The Row of Employee Is Updated Successfully.");
-        Console.ForegroundColor = ConsoleColor.White;
-
-        return isIDAieUpdated;
-
-      }
-      else
-      {
-        NotValidIDExistance();
-        return false;
-      }
-    }
-
-
-    //Function That checked if Row is Updated Main One 
-    private bool IsUpdated(ref int inputID, ref bool isUpdated)
-    {
-
-      if (IsIDEmpsExist(inputID))
-      {
-        bool isIDAieUpdated = false;
-        do
-        {
-          //To Ensure the user insert Not Empty
-          while (true)
-          {
-            Console.Write("Enter Employee Name: ");
-            Name = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(Name))
-              break;
-
-            canNotBeEmpty("Employee Name");
-          }
-
-          //To Ensure the user insert Not Empty
-          while (true)
-          {
-            Console.Write("Enter Employee Address: ");
-            Address = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(Address))
-              break;
-
-            canNotBeEmpty("Employee Address");
-          }
-
-
-          Console.Write("Enter Employee Gender(M/F): ");
-          char _Gender;
-          while (!char.TryParse(Console.ReadLine(), out _Gender) || char.ToUpper(_Gender) != 'M' && char.ToUpper(_Gender) != 'F')
-          {
-            NotValidGender();
-          }
-
-
-          //To Ensure the user insert Not Empty
-          while (true)
-          {
-            Console.Write("Enter Employee Position: ");
-            Position = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(Position))
-              break;
-
-            canNotBeEmpty("Employee Position");
-          }
-
-
-          Console.Write("Enter Employee Birthday (MM/DD/YYYY): ");
-
-          DateTime _date;
-          while (!DateTime.TryParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out _date))
-          {
-            NotValidDate();
-          }
-
-
-          Console.Write("Enter AirlineID: ");
-          int _AirlineID;
-          while (true)
-          {
-            if (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
-              NotValidIDPositive();
-            else if (!IsIDExist(_AirlineID))
-              NotValidIDExistance();
-            else
-              break;
-
-          }
-
-          //To Ensure That ID _AirlineID is in our DB and create That spcific Row
-          if (IsRowUpdated(ref _AirlineID, ref inputID, ref isIDAieUpdated, ref _Gender, ref _date)) { }
-
-          isUpdated = true;
-
-        } while (!isIDAieUpdated);
-
-      }
-      else
-      {
-        NotValidIDEmpExistance();
-        return false;
-      }
-
-      return isUpdated;
-
-    }
-
-
-
-    //Function That checked if Row is Deleted 
-    private bool IsIDDeleted(int inputID, ref bool deletionSuccessful)
-    {
-
-      if (IsIDEmpsExist(inputID))
-      {
-
-        string query = "DELETE FROM Employees WHERE Employee_ID = @InputID";
-        using (SqlCommand command = new SqlCommand(query, SystemRepostory.connection))
-        {
-          command.Parameters.AddWithValue("@InputID", inputID);
-
-          command.ExecuteNonQuery();
-        }
-
-
-        deletionSuccessful = true;
-
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("The Row of Employees Deleted Successfully.");
-        Console.ForegroundColor = ConsoleColor.White;
-
-        return deletionSuccessful;
-      }
-      else
-      {
-        NotValidIDEmpExistance();
-        return false;
-      }
-    }
-
-
-    //Function That checked if Row is getten 
-    private bool IsGetted(int inputID, ref bool IsGetting)
-    {
-
-      if (IsIDEmpsExist(inputID))
-      {
-
-        string query = "SELECT * FROM Employees WHERE Employee_ID = @InputID";
-
-        using (SqlCommand command = new SqlCommand(query, SystemRepostory.connection))
-        {
-          command.Parameters.AddWithValue("@InputID", inputID);
-          using (SqlDataReader reader = command.ExecuteReader())
-          {
-            while (reader.Read())
-            {
-              Employee_ID = (int)reader["Employee_ID"];
-              Name = reader.IsDBNull(reader.GetOrdinal("Name")) ? "" : (string)reader["Name"];
-              Address = reader.IsDBNull(reader.GetOrdinal("Address")) ? "" : (string)reader["Address"];
-              Gender = reader.IsDBNull(reader.GetOrdinal("Gender")) ? "" : (string)reader["Gender"];
-              Position = reader.IsDBNull(reader.GetOrdinal("Position")) ? "" : (string)reader["Position"];
-              Birthday = reader.IsDBNull(reader.GetOrdinal("Birthday")) ? null : (DateTime)reader["Birthday"];
-              AirlineID = reader.IsDBNull(reader.GetOrdinal("AirlineID")) ? null : (int)reader["AirlineID"];
-              IsDeleted = reader.IsDBNull(reader.GetOrdinal("IsDeleted")) ? false : (bool)reader["IsDeleted"];
-            }
-          }
-        }
-        TableMaker.PrintLine();
-        TableMaker.PrintRow("Employee_ID", "Name", "Address", "Gender", "Position", "Birthday", "AirlineID", "IsDeleted");
-        TableMaker.PrintLine();
-        TableMaker.PrintRow(Employee_ID.ToString(), Name, Address, Gender, Position, Birthday.ToString(), AirlineID.ToString(), IsDeleted.ToString());
-        TableMaker.PrintLine();
-        //  Console.WriteLine($"Employee_ID: {Employee_ID}, Name: {Name}," +
-        //                    $" Address: {Address},Gender: {Gender},Position: {Position}," +
-        //                    $"Birthday: {Birthday}, AirlineID: {AirlineID}, IsDeleted: {IsDeleted}");
-
-
-        IsGetting = true;
-
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("The Row of Employee Is Getted Successfully.");
-        Console.ForegroundColor = ConsoleColor.White;
-
-
-        return IsGetting;
-      }
-      else
-      {
-        NotValidIDExistance();
-        return false;
-      }
-    }
-
-
-
   }
-
-
-
-
-
-
 }
 

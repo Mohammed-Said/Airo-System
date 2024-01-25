@@ -112,3 +112,26 @@ D:\C# Project\Final\Test\obj\Debug\net6.0\refint\Test.dll
 D:\C# Project\Final\Test\obj\Debug\net6.0\Test.pdb
 D:\C# Project\Final\Test\obj\Debug\net6.0\Test.genruntimeconfig.cache
 D:\C# Project\Final\Test\obj\Debug\net6.0\ref\Test.dll
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\bin\Debug\net6.0\Test.exe
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\bin\Debug\net6.0\Test.deps.json
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\bin\Debug\net6.0\Test.runtimeconfig.json
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\bin\Debug\net6.0\Test.dll
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\bin\Debug\net6.0\Test.pdb
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\bin\Debug\net6.0\Spectre.Console.dll
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\bin\Debug\net6.0\System.Data.SqlClient.dll
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\bin\Debug\net6.0\runtimes\win-arm64\native\sni.dll
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\bin\Debug\net6.0\runtimes\win-x64\native\sni.dll
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\bin\Debug\net6.0\runtimes\win-x86\native\sni.dll
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\bin\Debug\net6.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\obj\Debug\net6.0\Test.csproj.AssemblyReference.cache
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\obj\Debug\net6.0\Test.GeneratedMSBuildEditorConfig.editorconfig
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\obj\Debug\net6.0\Test.AssemblyInfoInputs.cache
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\obj\Debug\net6.0\Test.AssemblyInfo.cs
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\obj\Debug\net6.0\Test.csproj.CoreCompileInputs.cache
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\obj\Debug\net6.0\Test.csproj.CopyComplete
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\obj\Debug\net6.0\Test.dll
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\obj\Debug\net6.0\refint\Test.dll
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\obj\Debug\net6.0\Test.pdb
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\obj\Debug\net6.0\Test.genruntimeconfig.cache
+D:\COURSES\ITI\Track .Net\#Projects\5_Project c#\#00finalllll\Final\Test\obj\Debug\net6.0\ref\Test.dll
