@@ -14,6 +14,7 @@ namespace c_Airline
         Route,
         Flight,
         Transaction,
+        Other,
         Back,
         Exit
     }

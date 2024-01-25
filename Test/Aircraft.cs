@@ -125,9 +125,15 @@ namespace c_Airline
           //To Ensure AirlineID int :
           Console.Write("Enter AirlineID: ");
           int _AirlineID;
-          while (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
+          while (true)
           {
-            NotValidIDPositive();
+            if (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
+              NotValidIDPositive();
+            else if (!IsIDExist(_AirlineID))
+              NotValidIDExistance();
+            else
+              break;
+
           }
 
           //To Ensure That ID _AirlineID is in our DB and create That spcific Row
@@ -301,7 +307,7 @@ namespace c_Airline
       Console.ForegroundColor = ConsoleColor.Red;
       Console.WriteLine("Invalid AirlineID. The specified AirlineID does not Exist.");
       Console.ForegroundColor = ConsoleColor.White;
-
+      Console.Write("Please enter a Exist ID:");
     }
 
     //Not Valid ID AirCraft
@@ -439,9 +445,15 @@ namespace c_Airline
 
           Console.Write("Enter AirlineID: ");
           int airlineID;
-          while (!int.TryParse(Console.ReadLine(), out airlineID) || airlineID <= 0)
+          while (true)
           {
-            NotValidIDPositive();
+            if (!int.TryParse(Console.ReadLine(), out airlineID) || airlineID <= 0)
+              NotValidIDPositive();
+            else if (!IsIDExist(airlineID))
+              NotValidIDExistance();
+            else
+              break;
+
           }
 
           //To Ensure That ID _AirlineID is in our DB and create That spcific Row

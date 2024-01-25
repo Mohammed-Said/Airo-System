@@ -22,8 +22,29 @@ namespace c_Airline
     public int? AirlineID { get; set; }
     public bool? IsDeleted { get; set; }
 
+    public Transaction()
+    {
 
-
+    }
+    public Transaction(int? id , decimal amount,string desc)
+    {
+      string query = $"select AirlineID from AirCraft where AircraftID={id}";
+      using (SqlCommand command = new SqlCommand(query, SystemRepostory.connection))
+      {
+        using (SqlDataReader reader = command.ExecuteReader())
+        {
+          while (reader.Read())
+          {
+            id = (int?)reader["AirlineID"];
+          }
+        }
+      }
+      query = $"INSERT INTO Transactions (Description,Amount,Date,AirlineID,IsDeleted) VALUES ('{desc}', {amount},GETDATE() ,{id}, 1)";
+      using (SqlCommand command = new SqlCommand(query, SystemRepostory.connection))
+      {
+        command.ExecuteNonQuery();
+      }
+    }
     //Constructor
 
 
@@ -74,9 +95,15 @@ namespace c_Airline
           Console.Write("Enter AirlineID: ");
 
           int _AirlineID;
-          while (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
+          while (true)
           {
-            NotValidInt();
+            if (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
+              NotValidIDPositive();
+            else if (!IsIDExist(_AirlineID))
+              NotValidIDExistance();
+            else
+              break;
+
           }
 
           //To Ensure That ID _AirlineID is in our DB and create That spcific Row
@@ -289,6 +316,7 @@ namespace c_Airline
       Console.ForegroundColor = ConsoleColor.Red;
       Console.WriteLine("Invalid AirlineID. The specified AirlineID does not Exist.");
       Console.ForegroundColor = ConsoleColor.White;
+      Console.Write("Please enter a Exist ID:");
 
     }
 
@@ -493,9 +521,15 @@ namespace c_Airline
           Console.Write("Enter AirlineID: ");
 
           int _AirlineID;
-          while (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
+          while (true)
           {
-            NotValidInt();
+            if (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
+              NotValidIDPositive();
+            else if (!IsIDExist(_AirlineID))
+              NotValidIDExistance();
+            else
+              break;
+
           }
 
           //To Ensure That ID _AirlineID is in our DB and create That spcific Row

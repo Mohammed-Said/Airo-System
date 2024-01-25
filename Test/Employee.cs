@@ -95,14 +95,20 @@ namespace c_Airline
           //To Ensure That ID _AirlineID is int 
           Console.Write("Enter AirlineID: ");
           int _AirlineID;
-          while (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
+          while (true)
           {
-            NotValidIDPositive();
+            if (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
+              NotValidIDPositive();
+            else if (!IsIDExist(_AirlineID))
+              NotValidIDExistance();
+            else
+              break;
+
           }
 
 
           //To Ensure That ID _AirlineID is in our DB and create That spcific Row
-          if (IscreatedFunc(_AirlineID, ref Iscreated, ref _Gender, ref _date)) { }
+          IscreatedFunc(_AirlineID, ref Iscreated, ref _Gender, ref _date);
 
 
         } while (!Iscreated);
@@ -280,8 +286,9 @@ namespace c_Airline
     private void NotValidIDPositive()
     {
       Console.ForegroundColor = ConsoleColor.Red;
-      Console.Write("Invalid input . Please enter a positive integer: ");
+      Console.Write("Invalid input. ");
       Console.ForegroundColor = ConsoleColor.White;
+      Console.Write("Please enter a positive integer:");
     }
 
     //The NotValidGender Message
@@ -311,6 +318,7 @@ namespace c_Airline
       Console.ForegroundColor = ConsoleColor.Red;
       Console.WriteLine("Invalid AirlineID. The specified AirlineID does not Exist.");
       Console.ForegroundColor = ConsoleColor.White;
+      Console.Write("Please enter a Exist ID:");
 
     }
 
@@ -320,6 +328,8 @@ namespace c_Airline
       Console.ForegroundColor = ConsoleColor.Red;
       Console.WriteLine("Invalid EmployeeID. The specified EmployeeID does not Exist.");
       Console.ForegroundColor = ConsoleColor.White;
+      Console.Write("Please enter a Exist ID:");
+
 
     }
 
@@ -348,7 +358,6 @@ namespace c_Airline
       {
         Console.WriteLine($"Error checking AirlineID existence: {ex.Message}");
       }
-
       return exists;
     }
 
@@ -542,9 +551,15 @@ namespace c_Airline
 
           Console.Write("Enter AirlineID: ");
           int _AirlineID;
-          while (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
+          while (true)
           {
-            NotValidIDPositive();
+            if (!int.TryParse(Console.ReadLine(), out _AirlineID) || _AirlineID <= 0)
+              NotValidIDPositive();
+            else if (!IsIDExist(_AirlineID))
+              NotValidIDExistance();
+            else
+              break;
+
           }
 
           //To Ensure That ID _AirlineID is in our DB and create That spcific Row

@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using System.Reflection;
 using Spectre.Console;
 using System.Data;
+using System.Collections;
 
 namespace c_Airline
 {
@@ -17,9 +18,51 @@ namespace c_Airline
 
     private bool isDeleted;
 
+    Route route;
+
+    public Flight()
+    {
+        
+    }
+    public Flight(int id)
+    {
+      if (IsFlightIDExist(id))
+      {
+        route = new Route();
+        string query = $"select * from Flights f,Route r\r\nwhere r.Route_ID=f.Route_ID and FlightID={id};";
+        using (SqlCommand command = new SqlCommand(query, SystemRepostory.connection))
+        {
+          using (SqlDataReader reader = command.ExecuteReader())
+          {
+            while (reader.Read())
+            {
+              FlightID = (int?)reader["FlightID"];
+              AircraftId = reader.IsDBNull(reader.GetOrdinal("AircraftID")) ? null : (int?)reader["AircraftID"];
+              RouteId = reader.IsDBNull(reader.GetOrdinal("Route_ID")) ? null : (int?)reader["Route_ID"];
+              DepartedTime = reader.IsDBNull(reader.GetOrdinal("Dept_Date")) ? null : (DateTime?)reader["Dept_Date"];
+              NumOfPassenger = reader.IsDBNull(reader.GetOrdinal("Num_OF_Passanger")) ? null : (int?)reader["Num_OF_Passanger"];
+              PricePerPassenger = reader.IsDBNull(reader.GetOrdinal("Price")) ? null : (decimal?)reader["Price"];
+              ArrivalTime = reader.IsDBNull(reader.GetOrdinal("Arrival_Date")) ? null : (DateTime?)reader["Arrival_Date"];
+              TimeSpent = reader.IsDBNull(reader.GetOrdinal("Time_Spent")) ? null : (int?)reader["Time_Spent"];
+              IsDeleted = reader.IsDBNull(reader.GetOrdinal("IsDeleted")) ? false : (bool)reader["IsDeleted"];
+              route.RouteID = reader.IsDBNull(reader.GetOrdinal("Route_ID")) ? null : (int)reader["Route_ID"];
+              route.Distance = reader.IsDBNull(reader.GetOrdinal("Distance")) ? null : (int)reader["Distance"];
+              route.Destination = reader.IsDBNull(reader.GetOrdinal("Destination")) ? null : (string)reader["Destination"];
+              route.Origin = reader.IsDBNull(reader.GetOrdinal("Origin")) ? null : (string)reader["Origin"];
+              route.Classification = reader.IsDBNull(reader.GetOrdinal("Classification")) ? null : (string)reader["Classification"];
+              route.IsDeleted = reader.IsDBNull(reader.GetOrdinal("IsDeleted")) ? null : (bool)reader["IsDeleted"];
+            }
+          }
+        }
+      }
+      else {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Invalid AirlineID. The specified AirlineID does not Exist.");
+        Console.ForegroundColor = ConsoleColor.White;
+      }
 
 
-
+    }
 
     //Properties 
     public int? FlightID { get; set; }
@@ -159,11 +202,11 @@ namespace c_Airline
                 FlightID = (int?)reader["FlightID"],
                 AircraftId = reader.IsDBNull(reader.GetOrdinal("AircraftID")) ? null : (int?)reader["AircraftID"],
                 RouteId = reader.IsDBNull(reader.GetOrdinal("Route_ID")) ? null : (int?)reader["Route_ID"],
-                DepartedTime = reader.IsDBNull(reader.GetOrdinal("Dept_Date"))?null:(DateTime?)reader["Dept_Date"],
+                DepartedTime = reader.IsDBNull(reader.GetOrdinal("Dept_Date")) ? null : (DateTime?)reader["Dept_Date"],
                 NumOfPassenger = reader.IsDBNull(reader.GetOrdinal("Num_OF_Passanger")) ? null : (int?)reader["Num_OF_Passanger"],
-                PricePerPassenger = reader.IsDBNull(reader.GetOrdinal("Price"))?null: (decimal?)reader["Price"],
-                ArrivalTime = reader.IsDBNull(reader.GetOrdinal("Arrival_Date")) ? null : (DateTime?)reader["Arrival_Date"],     
-                TimeSpent = reader.IsDBNull(reader.GetOrdinal("Time_Spent")) ? null:(int?)reader["Time_Spent"],
+                PricePerPassenger = reader.IsDBNull(reader.GetOrdinal("Price")) ? null : (decimal?)reader["Price"],
+                ArrivalTime = reader.IsDBNull(reader.GetOrdinal("Arrival_Date")) ? null : (DateTime?)reader["Arrival_Date"],
+                TimeSpent = reader.IsDBNull(reader.GetOrdinal("Time_Spent")) ? null : (int?)reader["Time_Spent"],
                 IsDeleted = reader.IsDBNull(reader.GetOrdinal("IsDeleted")) ? false : (bool)reader["IsDeleted"]
               });
             }
@@ -705,11 +748,11 @@ namespace c_Airline
             {
               FlightID = (int?)reader["FlightID"];
               AircraftId = reader.IsDBNull(reader.GetOrdinal("AircraftID")) ? null : (int?)reader["AircraftID"];
-                RouteId = reader.IsDBNull(reader.GetOrdinal("Route_ID")) ? null : (int?)reader["Route_ID"];
+              RouteId = reader.IsDBNull(reader.GetOrdinal("Route_ID")) ? null : (int?)reader["Route_ID"];
               DepartedTime = reader.IsDBNull(reader.GetOrdinal("Dept_Date")) ? null : (DateTime?)reader["Dept_Date"];
               NumOfPassenger = reader.IsDBNull(reader.GetOrdinal("Num_OF_Passanger")) ? null : (int?)reader["Num_OF_Passanger"];
               PricePerPassenger = reader.IsDBNull(reader.GetOrdinal("Price")) ? null : (decimal?)reader["Price"];
-                ArrivalTime = reader.IsDBNull(reader.GetOrdinal("Arrival_Date")) ? null : (DateTime?)reader["Arrival_Date"] ;
+              ArrivalTime = reader.IsDBNull(reader.GetOrdinal("Arrival_Date")) ? null : (DateTime?)reader["Arrival_Date"];
               TimeSpent = reader.IsDBNull(reader.GetOrdinal("Time_Spent")) ? null : (int?)reader["Time_Spent"];
               IsDeleted = reader.IsDBNull(reader.GetOrdinal("IsDeleted")) ? false : (bool)reader["IsDeleted"];
             }
@@ -744,34 +787,33 @@ namespace c_Airline
     }
 
 
-    
+
+    #region Future Functions :
+    public decimal TotalPrice() => (decimal)this.NumOfPassenger * (decimal)this.PricePerPassenger;
+
+    public string OriginCity() => route.Origin;
+    public string DestinationCity() => route.Destination;
+
+    public void FlightArrival()
+    {
+      string query = $"update Flights SET Arrival_Date=GETDATE() where FlightID={FlightID};";
+      using (SqlCommand command = new SqlCommand(query, SystemRepostory.connection))
+      {
+        command.ExecuteNonQuery();
+      }
+      ArrivalTime = DateTime.Now;
+    }
+
+
+
+
+
+    //public void FlightInfo()
+    //{
+
+    //}
+    #endregion
   }
-  #region Future Functions :
-  //public int TotalPrice()
-  //{
-  //    return 1;
-  //}
-
-  //public string OriginCity()
-  //{
-  //    return "";
-  //}
-
-  //public string DestinationCity()
-  //{
-  //    return "";
-  //}
-
-  //public void RouteInfo()
-  //{
-
-  //}
-
-  //public void FlightInfo()
-  //{
-
-  //}
-  #endregion
 
 
 }

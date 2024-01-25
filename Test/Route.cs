@@ -15,12 +15,12 @@ namespace c_Airline
     //Constructor
 
     //Properties 
-    public int? RouteID { get; set; }
-    public string? Origin { get; set; }
-    public string? Destination { get; set; }
-    public int? Distance { get; set; }
-    public string? Classification { get; set; }
-    public bool? IsDeleted { get; set; }
+    public int? RouteID { get;  set; }
+    public string? Origin { get;  set; }
+    public string? Destination { get;  set; }
+    public int? Distance { get;  set; }
+    public string? Classification { get;  set; }
+    public bool? IsDeleted { get;  set; }
 
 
     //Main Functions : 
